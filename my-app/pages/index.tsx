@@ -1,8 +1,8 @@
-import { NextPage } from 'next';
+import { NextPage } from "next";
 
 const Index: NextPage = () => {
     return (
-        <div className="flex-row justify-center items-center mx-4">
+        <div className="mt-10 flex-row justify-center items-center mx-4">
             <h1 className="text-5xl mb-10 font-bold">Weather</h1>
             <div className="space-y-5 mb-10">
                 <div className=" w-full h-20 border-2 border-black shadow-md border-b-4 bg-white text-black rounded-xl flex justify-between items-center ">

@@ -1,8 +1,8 @@
-import { NextPage } from 'next';
+import { NextPage } from "next";
 
 const SimpleTag: NextPage = () => {
     return (
-        <div className="mx-auto w-full">
+        <div className="mx-auto w-full mt-10">
             <div>
                 <svg
                     className="w-12 h-12"
