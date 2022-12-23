@@ -1,121 +1,92 @@
 import { NextPage } from "next";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+
+interface FormProps {
+    name: string;
+    email: string;
+    password: string;
+}
 
 const Index: NextPage = () => {
+    const [success, setSuccess] = useState("");
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: { errors },
+        reset,
+    } = useForm<FormProps>({
+        defaultValues: { name: "", email: "", password: "" },
+        mode: "onChange",
+    });
+    const onVaild = (form: FormProps) => {
+        setSuccess("Thank you!");
+    };
+
     return (
-        <div className="mt-10 flex-row justify-center items-center mx-4">
-            <h1 className="text-5xl mb-10 font-bold">Weather</h1>
-            <div className="space-y-5 mb-10">
-                <div className=" w-full h-20 border-2 border-black shadow-md border-b-4 bg-white text-black rounded-xl flex justify-between items-center ">
-                    <div className="ml-4 flex-col justify-center items-center">
-                        <div className="font-semibold text-2xl">Casius</div>
-                        <div className="font-medium text-sm">Mars, 12AM</div>
-                    </div>
-                    <div className="mr-4 flex items-center">
-                        <svg
-                            className="w-full h-12"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                            />
-                        </svg>
-                        <div className="font-bold text-4xl"> 85&#186;</div>
-                    </div>
+        <div>
+            <form onSubmit={handleSubmit(onVaild)} className="space-y-2 mt-2">
+                <div className="flex items-center space-x-2">
+                    <span>Name: </span>
+                    <input
+                        {...register("name", { required: true })}
+                        type="text"
+                        className="border-2 focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-offset-2 "
+                    />
+                    {watch("name") ? null : (
+                        <span>please write down your name</span>
+                    )}
                 </div>
-                <div className=" w-full h-20 border-2 border-black shadow-md border-b-4 bg-yellow-400 text-black rounded-xl flex justify-between items-center ">
-                    <div className="ml-4 flex-col justify-center items-center">
-                        <div className="font-semibold text-2xl">Casius</div>
-                        <div className="font-medium text-sm">Mars, 12AM</div>
-                    </div>
-                    <div className="mr-4 flex items-center">
-                        <svg
-                            className="w-full h-12"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                            />
-                        </svg>
-                        <div className="font-bold text-4xl"> 85&#186;</div>
-                    </div>
+                <div>
+                    <span>Email:</span>
+                    <input
+                        {...register("email", {
+                            required: true,
+                            validate: {
+                                requireNaver: (value) =>
+                                    value.includes("@naver.com") ||
+                                    "You write down @naver.com",
+                            },
+                        })}
+                        className="border-2 focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-offset-2 "
+                        type="email"
+                        placeholder="Only @naver.com"
+                    />
+                    {watch("email") ? (
+                        errors.email?.message
+                    ) : (
+                        <span>please write down your email</span>
+                    )}
                 </div>
-                <div className=" w-full h-20 border-2 border-black shadow-md border-b-4 bg-green-400 text-black rounded-xl flex justify-between items-center ">
-                    <div className="ml-4 flex-col justify-center items-center">
-                        <div className="font-semibold text-2xl">Casius</div>
-                        <div className="font-medium text-sm">Mars, 12AM</div>
-                    </div>
-                    <div className="mr-4 flex items-center">
-                        <svg
-                            className="w-full h-12"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                            />
-                        </svg>
-                        <div className="font-bold text-4xl"> 85&#186;</div>
-                    </div>
+                <div>
+                    <span>Password:</span>
+                    <input
+                        {...register("password", {
+                            required: "please write down your password",
+                            minLength: {
+                                value: 10,
+                                message:
+                                    "Password has to be more than 10 chars ",
+                            },
+                        })}
+                        className="border-2 focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-offset-2 "
+                        type="password"
+                        placeholder="Min 10Characters"
+                    />
+                    {watch("password") ? (
+                        errors.password ? (
+                            <span>{errors.password.message}</span>
+                        ) : null
+                    ) : (
+                        <span>please write down your password</span>
+                    )}
                 </div>
-                <div className=" w-full h-20 border-2 border-black shadow-md border-b-4 bg-orange-600 text-black rounded-xl flex justify-between items-center ">
-                    <div className="ml-4 flex-col justify-center items-center">
-                        <div className="font-semibold text-2xl">Casius</div>
-                        <div className="font-medium text-sm">Mars, 12AM</div>
-                    </div>
-                    <div className="mr-4 flex items-center">
-                        <svg
-                            className="w-full h-12"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                            />
-                        </svg>
-                        <div className="font-bold text-4xl"> 85&#186;</div>
-                    </div>
-                </div>
-            </div>
-            <div className="flex justify-center">
-                <button>
-                    <svg
-                        className="w-16 h-16"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1}
-                            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                    </svg>
+                <button className="py-1 px-3  border rounded-md bg-slate-300 focus:outline-none focus:bg-blue-500 focus:ring-2 focus:ring-offset-2 focus:ring-blue-400">
+                    Log in
                 </button>
-            </div>
+                <div>{success}</div>
+            </form>
         </div>
     );
 };
