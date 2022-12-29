@@ -1,30 +1,28 @@
 import { NextPage } from "next";
 import { useForm } from "react-hook-form";
-import useSWR from "swr";
-import { useEffect, useRef, useState } from "react";
-const URL = "https://dogs-api.nomadcoders.workers.dev";
+import { useEffect, useRef } from "react";
+import useDog from "../libs/useDog";
 
-interface VideoProp {
-    url: string;
-    isLiked: boolean;
-}
 const Index: NextPage = () => {
     const videoRef = useRef();
     const { handleSubmit } = useForm();
-    const { mutate, data, error } = useSWR<VideoProp>(URL);
+    const { mutate, dog, isLoading } = useDog();
     const onClickNewDog = () => {
         mutate();
-        console.log(data);
+        console.log(dog);
+    };
+    const onClieckLike = () => {
+        mutate((prev: any) => ({ ...prev, isLiked: !prev.isLiked }), false);
     };
     const onValid = () => {
-        // setVedioUrl(data?.url!);
+        console.log("as");
     };
     useEffect(() => {
         videoRef.current?.load();
-    }, [data, mutate]);
+    }, [dog, mutate]);
     return (
         <div className="w-full max-w-xl mx-auto h-screen">
-            {data?.url ? (
+            {dog?.url ? (
                 <>
                     <div className="w-full mx-auto">
                         <h1 className="pt-4 text-3xl text-white ">Wolf.tv</h1>
@@ -39,9 +37,9 @@ const Index: NextPage = () => {
                                 muted
                                 autoPlay
                                 loop
-                                className="aspect-auto max-h-96   bg-black"
+                                className="aspect-auto h-96 bg-black"
                             >
-                                <source src={data.url} />
+                                <source src={dog.url} />
                             </video>
 
                             <div className="mt-4 w-full flex items-center space-x-3">
@@ -51,8 +49,11 @@ const Index: NextPage = () => {
                                 >
                                     New Dog!
                                 </button>
-                                <button className="h-12 rounded-xl  w-full bg-blue-400">
-                                    Like
+                                <button
+                                    onClick={onClieckLike}
+                                    className="h-12 rounded-xl  w-full bg-blue-400"
+                                >
+                                    {dog.isLiked ? "unLike" : "Like"}
                                 </button>
                             </div>
                         </form>
