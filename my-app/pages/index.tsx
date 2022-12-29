@@ -1,78 +1,65 @@
 import { NextPage } from "next";
-import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import useMutation from "../libs/client/useMutation";
+import useSWR from "swr";
+import { useEffect, useRef, useState } from "react";
+const URL = "https://dogs-api.nomadcoders.workers.dev";
 
-interface FormProp {
-    login: string;
-    name: string;
-    email: string;
-}
-interface EnterProp {
-    ok: boolean;
+interface VideoProp {
+    url: string;
+    isLiked: boolean;
 }
 const Index: NextPage = () => {
-    const router = useRouter();
-    const [enter, { data, loading }] = useMutation<EnterProp>("/api/enter");
-
-    const { register, handleSubmit } = useForm<FormProp>();
-    const onVaild = () => {
-        router.push("/profile");
+    const videoRef = useRef();
+    const { handleSubmit } = useForm();
+    const { mutate, data, error } = useSWR<VideoProp>(URL);
+    const onClickNewDog = () => {
+        mutate();
+        console.log(data);
     };
-    const onEnterVaild = (form: FormProp) => {
-        if (loading) return;
-        enter(form);
+    const onValid = () => {
+        // setVedioUrl(data?.url!);
     };
+    useEffect(() => {
+        videoRef.current?.load();
+    }, [data, mutate]);
     return (
-        <div className="m-5">
-            {data?.ok ? (
+        <div className="w-full max-w-xl mx-auto h-screen">
+            {data?.url ? (
                 <>
-                    <h1 className="mb-5 font-bold text-5xl">Login</h1>
-                    <form
-                        onSubmit={handleSubmit(onVaild)}
-                        className="space-y-3"
-                    >
-                        <div>
-                            <span>Email: </span>
-                            <input
-                                {...register("login", { required: true })}
-                                className="border-2 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-offset-2 "
-                                type="email"
-                            />
-                        </div>
-                        <button className="px-2 border-2 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-offset-2  ">
-                            Login
-                        </button>
-                    </form>
+                    <div className="w-full mx-auto">
+                        <h1 className="pt-4 text-3xl text-white ">Wolf.tv</h1>
+                        <form
+                            onSubmit={handleSubmit(onValid)}
+                            className="flex flex-col items-center justify-center"
+                        >
+                            {/* <div className="m-2 w-full h-44 bg-slate-300"></div> */}
+
+                            <video
+                                ref={videoRef}
+                                muted
+                                autoPlay
+                                loop
+                                className="aspect-auto max-h-96   bg-black"
+                            >
+                                <source src={data.url} />
+                            </video>
+
+                            <div className="mt-4 w-full flex items-center space-x-3">
+                                <button
+                                    onClick={onClickNewDog}
+                                    className="h-12 rounded-xl  w-full bg-white"
+                                >
+                                    New Dog!
+                                </button>
+                                <button className="h-12 rounded-xl  w-full bg-blue-400">
+                                    Like
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </>
             ) : (
-                <>
-                    <h1 className="font-bold mb-3 text-5xl">Create Account</h1>
-                    <form
-                        className="space-y-3"
-                        onSubmit={handleSubmit(onEnterVaild)}
-                    >
-                        <div>
-                            <span>Name: </span>
-                            <input
-                                className="border-2 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-offset-2 "
-                                {...register("name", { required: true })}
-                                type="text"
-                            />
-                        </div>
-                        <div>
-                            <span>Email: </span>
-                            <input
-                                className="border-2 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-offset-2 "
-                                {...register("email", { required: true })}
-                                type="email"
-                            />
-                        </div>
-                        <button className="px-2 border-2 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-offset-2  ">
-                            Create Account
-                        </button>
-                    </form>
-                </>
+                <span className="text-white">loading...</span>
             )}
         </div>
     );
