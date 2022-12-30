@@ -3,13 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import useDog from "../libs/useDog";
 
 const Index: NextPage = () => {
-    const [isLike, setIsLike] = useState<boolean>(false);
-    const videoRef = useRef();
+    const [isLike, setIsLike] = useState<boolean>(true);
+    const videoRef = useRef<any>();
     const { mutate, dog, isLoading } = useDog();
     const onClickNewDog = (e: React.MouseEvent<HTMLElement>) => {
-        e.preventDefault();
         mutate((prev: any) => ({ ...prev, isLiked: isLike }), false);
+        mutate();
         console.log(dog);
+        e.preventDefault();
     };
     const onClieckLike = (e: React.MouseEvent<HTMLElement>) => {
         e.preventDefault();
