@@ -1,0 +1,15 @@
+// POST
+axios.post('/api/todos', { title: 'ajax 공부' }).then((res) => {
+    console.log(res);
+});
+
+// PATCH
+axios.patch('/api/todos/3', { title: 'axios 공부' }).then((res) => {
+    console.log(res);
+});
+
+// DELETE /api/todos/1 (Delete)
+// DELETE
+axios.delete('/api/todos/3').then((res) => {
+    console.log(res);
+});
